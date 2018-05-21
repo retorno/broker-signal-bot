@@ -113,6 +113,7 @@ public class LogicBot {
 		System.out.println(new Date()+" ********* LUCRO/PREJUIZO:  "+client.getRecipe());
 		System.out.println(new Date()+" ********* RESULT POINT  :  "+ result.getPointsStop());
 		System.out.println(new Date()+" ************************************************ ");
+		
 	}
 	
 	public void cleanDataBase(){
