@@ -22,6 +22,11 @@ public class BrokerSignalScrapAPIClient {
 		return new RestTemplate().getForObject(URL, String.class);
 	}
 	
+	public String getRecipe(){
+		String URL = Global.URL_SCRAP_API+"/recipe";
+		return new RestTemplate().getForObject(URL, String.class);
+	}
+	
 	public void changeStop(Long quantityPosition, String operation, Long stopLoss) {
 		String URL = Global.URL_SCRAP_API+"/change-stop";
 		

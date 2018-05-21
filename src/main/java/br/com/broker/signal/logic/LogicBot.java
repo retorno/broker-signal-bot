@@ -110,7 +110,7 @@ public class LogicBot {
 				? resultRepository.findAll().get(0) : new Result(0L, 0L);
 		
 		System.out.println(new Date()+" ************************************************ ");
-		System.out.println(new Date()+" ********* LUCRO/PREJUIZO:  ");
+		System.out.println(new Date()+" ********* LUCRO/PREJUIZO:  "+client.getRecipe());
 		System.out.println(new Date()+" ********* RESULT POINT  :  "+ result.getPointsStop());
 		System.out.println(new Date()+" ************************************************ ");
 	}
