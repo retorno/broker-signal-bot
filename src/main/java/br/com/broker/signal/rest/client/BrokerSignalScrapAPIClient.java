@@ -28,6 +28,8 @@ public class BrokerSignalScrapAPIClient {
 	}
 	
 	public void changeStop(Long quantityPosition, String operation, Long stopLoss) {
+		if(Global.SIMULATION) return;
+		
 		String URL = Global.URL_SCRAP_API+"/change-stop";
 		
 		HttpHeaders headers = new HttpHeaders();
