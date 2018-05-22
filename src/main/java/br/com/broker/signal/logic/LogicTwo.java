@@ -45,7 +45,7 @@ public class LogicTwo {
 		if(position == 0) {
 			
 			client.cancelOrder();
-			//EXECUTAR CLIENT (ZERAR TUDO)
+			client.zerarAll();
 			
 			Long stopLoss = (orderType.equals("Buy") ? lastPrice-Global.L2_LOSE_VARIANCE : lastPrice+Global.L2_LOSE_VARIANCE);
 			client.setOrder(position+Global.L2_INICIAL_CONTRACTS, orderType);
@@ -75,10 +75,8 @@ public class LogicTwo {
 
 				System.out.println(new Date()+" ===>> Stop Win    : "+position+" Contratos ===>> Last Price: "+lastPrice);
 				
-				//EXECUTAR CLIENT (ZERAR TUDO)
-				
+				client.zerarAll();
 				shoppingRepository.deleteAll();
-				
 				result.setQtWin(result.getQtWin()+1);
 			}
 			

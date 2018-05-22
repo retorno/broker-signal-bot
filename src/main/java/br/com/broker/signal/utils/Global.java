@@ -2,7 +2,7 @@ package br.com.broker.signal.utils;
 
 public class Global {
 
-	public static Boolean SIMULATION = true;
+	public static Boolean SIMULATION = false;
 	
 	//Broker Signal Scrap API
 	public static String URL_SCRAP_API = "http://127.0.0.1:5000/broker";

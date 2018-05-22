@@ -27,6 +27,11 @@ public class BrokerSignalScrapAPIClient {
 		return new RestTemplate().getForObject(URL, String.class);
 	}
 	
+	public String zerarAll(){
+		String URL = Global.URL_SCRAP_API+"/zerar-all";
+		return new RestTemplate().getForObject(URL, String.class);
+	}
+	
 	public void changeStop(Long quantityPosition, String operation, Long stopLoss) {
 		if(Global.SIMULATION) return;
 		
