@@ -10,18 +10,26 @@ public class Result {
 
 	public Result(){}
 	
-	public Result(Long pointsStop, Long qtStops){
-		this.pointsStop = pointsStop;
+	public Result(Long qtStops, Long qtWin){
 		this.qtStops = qtStops;
+		this.qtWin = qtWin;
+	}
+	
+	public Result(Long qtStops, Long qtWin, Long qtStopsAux){
+		this.qtStops = qtStops;
+		this.qtWin = qtWin;
+		this.qtStopsAux = qtStopsAux;
 	}
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	private Long pointsStop;
-	
 	private Long qtStops;
+	
+	private Long qtWin;
+	
+	private Long qtStopsAux;
 	
 	public Long getId() {
 		return id;
@@ -31,20 +39,28 @@ public class Result {
 		this.id = id;
 	}
 
-	public Long getPointsStop() {
-		return pointsStop;
-	}
-
-	public void setPointsStop(Long pointsStop) {
-		this.pointsStop = pointsStop;
-	}
-
 	public Long getQtStops() {
 		return qtStops;
 	}
 
 	public void setQtStops(Long qtStops) {
 		this.qtStops = qtStops;
+	}
+
+	public Long getQtWin() {
+		return qtWin;
+	}
+
+	public void setQtWin(Long qtWin) {
+		this.qtWin = qtWin;
+	}
+
+	public Long getQtStopsAux() {
+		return qtStopsAux;
+	}
+
+	public void setQtStopsAux(Long qtStopsAux) {
+		this.qtStopsAux = qtStopsAux;
 	}
 	
 }

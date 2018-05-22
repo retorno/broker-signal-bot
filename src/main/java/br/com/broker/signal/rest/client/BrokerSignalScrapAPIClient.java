@@ -44,5 +44,49 @@ public class BrokerSignalScrapAPIClient {
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 		new RestTemplate().postForEntity(URL, request , String.class);
 	}
+	
+	public void setOrder(Long quantity, String operation) {
+		if(Global.SIMULATION) return;
+		
+		String URL = Global.URL_SCRAP_API+"/set-order";
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("active","WINFUT");
+		headers.set("quantity", ""+quantity);
+		headers.set("operation", operation);
+		headers.set("production","1");
+
+		MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+		new RestTemplate().postForEntity(URL, request , String.class);
+	}
+	
+	public void setStop(Long quantity, String operation, Long stopLoss) {
+		if(Global.SIMULATION) return;
+		
+		String URL = Global.URL_SCRAP_API+"/set-stop";
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("active","WINFUT");
+		headers.set("quantity", ""+quantity);
+		headers.set("operation", operation);
+		headers.set("stop_loss", ""+stopLoss);
+		headers.set("production","1");
+
+		MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+		new RestTemplate().postForEntity(URL, request , String.class);
+	}
+	
+	public void cancelOrder() {
+		if(Global.SIMULATION) return;
+		
+		String URL = Global.URL_SCRAP_API+"/cancel-order";
+		
+		HttpHeaders headers = new HttpHeaders();
+		MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+		new RestTemplate().postForEntity(URL, request , String.class);
+	}
 
 }
