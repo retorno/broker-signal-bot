@@ -27,9 +27,10 @@ public class BrokerSignalScrapAPIClient {
 		return new RestTemplate().getForObject(URL, String.class);
 	}
 	
-	public String zerarAll(){
+	public void zerarAll(){
+		if(Global.SIMULATION) return;
 		String URL = Global.URL_SCRAP_API+"/zerar-all";
-		return new RestTemplate().getForObject(URL, String.class);
+		new RestTemplate().getForObject(URL, String.class);
 	}
 	
 	public void changeStop(Long quantityPosition, String operation, Long stopLoss) {
@@ -59,7 +60,9 @@ public class BrokerSignalScrapAPIClient {
 		headers.set("active","WINFUT");
 		headers.set("quantity", ""+quantity);
 		headers.set("operation", operation);
+		headers.set("stop_loss", "0");
 		headers.set("production","1");
+		headers.set("change_position", "1");
 
 		MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
@@ -77,6 +80,7 @@ public class BrokerSignalScrapAPIClient {
 		headers.set("operation", operation);
 		headers.set("stop_loss", ""+stopLoss);
 		headers.set("production","1");
+		headers.set("change_position", "1");
 
 		MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
@@ -89,6 +93,13 @@ public class BrokerSignalScrapAPIClient {
 		String URL = Global.URL_SCRAP_API+"/cancel-order";
 		
 		HttpHeaders headers = new HttpHeaders();
+		headers.set("active","WINFUT");
+		headers.set("quantity", "0");
+		headers.set("operation", "0");
+		headers.set("stop_loss", "0");
+		headers.set("production","1");
+		headers.set("change_position", "1");
+		
 		MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 		new RestTemplate().postForEntity(URL, request , String.class);
