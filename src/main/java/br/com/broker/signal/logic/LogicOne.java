@@ -10,14 +10,10 @@ import br.com.broker.signal.repository.ShoppingRepository;
 import br.com.broker.signal.rest.client.BrokerSignalScrapAPIClient;
 import br.com.broker.signal.utils.Global;
 
-/*
- * Logica baseada na compra (BUY/SELL) com stops pré montados e visa duplicar a possição em x na alavancagem
- */
 @Component
 public class LogicOne {
 
-	private String orderType = Global.L1_ORDER_TYPE;
-	private Boolean isQtStopToW8 = false;
+	private String orderType = Global.ORDER_TYPE;
 	
 	@Autowired
 	private ShoppingRepository shoppingRepository;
@@ -30,20 +26,13 @@ public class LogicOne {
 		Shopping shoppingPosition = (shoppingRepository.findAll() != null && shoppingRepository.findAll().size() > 0) 
 				? shoppingRepository.findAll().get(0) : null;
 		Result result = (resultRepository.findAll() != null && resultRepository.findAll().size() > 0)
-				? resultRepository.findAll().get(0) : new Result(0L, 0L);
+				? resultRepository.findAll().get(0) : new Result(0L, 0L, 0L);
 		
-		if(!isQtStopToW8 && result.getQtStops() == Global.L1_QT_STOP_TOW8) {
-			System.out.println(new Date()+" ===>> Aguardando  : "+Global.L1_MILLISEC_TOW8+" Millisegundos para retornar! ("+Global.L1_QT_STOP_TOW8+" Stops)");
-			Thread.sleep(Global.L1_MILLISEC_TOW8);
-			isQtStopToW8 = true;
+		if(result.getQtStopsAux() == 2) {
+			System.out.println("2 STOPs --- PLS RETRY BOT");
+			return;
 		}
-		if(result.getQtStops() == Global.L1_QT_STOP_TOINVERT) {
-			if(orderType.equals("Buy")) setOrderType("Sell");
-			else setOrderType("Buy");
-			System.out.println(new Date()+" ===>> Invertendo p/ : "+orderType+" ("+Global.L1_QT_STOP_TOINVERT+" Stops)");
-			result.setQtStops(0L);
-		}
-		
+				
 		Long lastPrice = Long.parseLong(client.getLastPrice());
 		Long position = shoppingPosition == null ? Long.parseLong(client.getPosition()) : shoppingPosition.getPosition();
 		
@@ -51,47 +40,47 @@ public class LogicOne {
 		
 		if(position == 0) {
 			
-			Long stopLoss = (orderType.equals("Buy") ? lastPrice-Global.L1_STOP_VARIANCE : lastPrice+Global.L1_STOP_VARIANCE);
-			client.changeStop(position+Global.L1_INICIAL_CONTRACTS, orderType, stopLoss);
+			client.changeStop(position+Global.INICIAL_CONTRACTS, orderType, Global.LOSE_VARIANCE, Global.WIN_VARIANCE);
 			
-			System.out.println(new Date()+" ===>> Order("+orderType+") : "+ (position+Global.L1_INICIAL_CONTRACTS) +" Contratos --- Price: "+lastPrice);
-			System.out.println(new Date()+" ===>> Stop        : "+ (position+Global.L1_INICIAL_CONTRACTS) +" Contratos --- Price: "+stopLoss);
+			System.out.println(new Date()+" ===>> Order("+orderType+") : "+ (position+Global.INICIAL_CONTRACTS) +" Contratos --- Price: "+lastPrice);
+			System.out.println(new Date()+" ===>> Stop        : "+ (position+Global.INICIAL_CONTRACTS) +" Contratos --- Price: "+(orderType.equals("Buy") ? lastPrice-Global.LOSE_VARIANCE : lastPrice+Global.LOSE_VARIANCE));
 			
 			//Salva compra
-			shoppingRepository.save(new Shopping(position+Global.L1_INICIAL_CONTRACTS, lastPrice, 
-					orderType.equals("Buy") ? lastPrice-Global.L1_STOP_VARIANCE : lastPrice+Global.L1_STOP_VARIANCE, 
-					orderType.equals("Buy") ? lastPrice+Global.L1_DOUBLE_VARIANCE : lastPrice-Global.L1_DOUBLE_VARIANCE));
+			shoppingRepository.save(new Shopping(position+Global.INICIAL_CONTRACTS, lastPrice, 
+				orderType.equals("Buy") ? lastPrice-Global.LOSE_VARIANCE : lastPrice+Global.LOSE_VARIANCE, 
+				orderType.equals("Buy") ? lastPrice+Global.WIN_VARIANCE : lastPrice-Global.WIN_VARIANCE));
+			
+			shoppingPosition = shoppingRepository.findAll().get(0);
+			
 		}else {
 			
 			if((orderType.equals("Buy") && lastPrice <= shoppingPosition.getSellPrice()) ||
 			   (orderType.equals("Sell") && lastPrice >= shoppingPosition.getSellPrice())) {
 				
 				System.out.println(new Date()+" ===>> Stop        : "+position+" ===>> Last Price: "+lastPrice);
-				shoppingRepository.deleteAll();
 				
 				result.setQtStops(result.getQtStops()+1);
+				result.setQtStopsAux(result.getQtStopsAux()+1);
 				
-				if(position == 1) {
-					result.setQtStops(result.getQtStops() + 1);
+				if(result.getQtStopsAux() == 2) {
+					shoppingRepository.deleteAll();
+				}else {
+					shoppingPosition.setSellPrice(
+							orderType.equals("Buy") ? lastPrice-Global.LOSE_VARIANCE : lastPrice+Global.LOSE_VARIANCE);
 				}
-			
+				
 			}else if((orderType.equals("Buy") && lastPrice >= shoppingPosition.getDoublePositionPrice()) ||
 					 (orderType.equals("Sell") && lastPrice <= shoppingPosition.getDoublePositionPrice())) {
 
-				Long stopLoss = (orderType.equals("Buy") ? lastPrice-Global.L1_STOP_VARIANCE : lastPrice+Global.L1_STOP_VARIANCE);
+				System.out.println(new Date()+" ===>> Stop Win    : "+position+" Contratos ===>> Last Price: "+lastPrice);
 				
-				System.out.println(new Date()+" ===>> Double      : "+position*2+" Contratos ===>> Last Price: "+lastPrice);
-				System.out.println(new Date()+" ===>> Stop        : "+position*2+" Contratos ===>> Price: "+stopLoss);
-				
-				shoppingPosition.setPosition(position*2);
-				shoppingPosition.setSellPrice(orderType.equals("Buy") ? lastPrice-Global.L1_STOP_VARIANCE : lastPrice+Global.L1_STOP_VARIANCE);
-				shoppingPosition.setDoublePositionPrice(orderType.equals("Buy") ? lastPrice+Global.L1_DOUBLE_VARIANCE : lastPrice-Global.L1_DOUBLE_VARIANCE);
-				
-				shoppingRepository.save(shoppingPosition);
-				result.setQtStops(0L);
-				
-				client.changeStop(position, orderType, stopLoss);
+				shoppingPosition.setDoublePositionPrice(
+						orderType.equals("Buy") ? lastPrice+Global.WIN_VARIANCE : lastPrice-Global.WIN_VARIANCE);
+				result.setQtStopsAux(0L);
 				result.setQtWin(result.getQtWin()+1);
+				
+				client.changeStop(position*2, orderType, Global.LOSE_VARIANCE, Global.WIN_VARIANCE);
+				System.out.println(new Date()+" ===>> Stop        : "+ (position*2) +" Contratos --- Price: "+(orderType.equals("Buy") ? lastPrice-Global.LOSE_VARIANCE : lastPrice+Global.LOSE_VARIANCE));
 			}
 			
 		}

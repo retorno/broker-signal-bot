@@ -33,7 +33,7 @@ public class BrokerSignalScrapAPIClient {
 		new RestTemplate().getForObject(URL, String.class);
 	}
 	
-	public void changeStop(Long quantityPosition, String operation, Long stopLoss) {
+	public void changeStop(Long quantityPosition, String operation, int stopLoss, int doublePoints) {
 		if(Global.SIMULATION) return;
 		
 		String URL = Global.URL_SCRAP_API+"/change-stop";
@@ -45,6 +45,8 @@ public class BrokerSignalScrapAPIClient {
 		headers.set("stop_loss", ""+stopLoss);
 		headers.set("production","1");
 		headers.set("change_position", "1");
+		headers.set("calculate+stop", "1");
+		headers.set("point_to_double", ""+doublePoints);
 
 		MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
