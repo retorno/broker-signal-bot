@@ -25,11 +25,13 @@ public class LogicBot {
 	
 	@Autowired
 	private LogicOne logicOne;
+	@Autowired
+	private LogicTwo logicTwo;
 	
-	@Scheduled(cron="*/2 * * * * *")
+	@Scheduled(cron="*/1 * * * * *")
 	public void doTheLogic() throws Exception{
 		if(CLEAN_DATABASE) cleanDataBase();
-		logicOne.execute();
+		logicTwo.execute();
 	}
 	
 	@Scheduled(cron="*/120 * * * * *")

@@ -34,13 +34,13 @@ public class LogicOne {
 		}
 				
 		Long lastPrice = Long.parseLong(client.getLastPrice());
-		Long position = shoppingPosition == null ? Long.parseLong(client.getPosition()) : shoppingPosition.getPosition();
+		Integer position = shoppingPosition == null ? Integer.parseInt(client.getPosition()) : shoppingPosition.getPosition();
 		
 		System.out.println(new Date()+" ===>> Position    : "+position+" ===>> Last Price: "+lastPrice);
 		
 		if(position == 0) {
 			
-			client.changeStop(position+Global.INICIAL_CONTRACTS, orderType, Global.LOSE_VARIANCE, Global.WIN_VARIANCE);
+			client.changeStop(position+Global.INICIAL_CONTRACTS, orderType, Global.LOSE_VARIANCE, Global.WIN_VARIANCE, 1L);
 			
 			System.out.println(new Date()+" ===>> Order("+orderType+") : "+ (position+Global.INICIAL_CONTRACTS) +" Contratos --- Price: "+lastPrice);
 			System.out.println(new Date()+" ===>> Stop        : "+ (position+Global.INICIAL_CONTRACTS) +" Contratos --- Price: "+(orderType.equals("Buy") ? lastPrice-Global.LOSE_VARIANCE : lastPrice+Global.LOSE_VARIANCE));
@@ -79,7 +79,7 @@ public class LogicOne {
 				result.setQtStopsAux(0L);
 				result.setQtWin(result.getQtWin()+1);
 				
-				client.changeStop(position*2, orderType, Global.LOSE_VARIANCE, Global.WIN_VARIANCE);
+				client.changeStop(position*2, orderType, Global.LOSE_VARIANCE, Global.WIN_VARIANCE, 1L);
 				System.out.println(new Date()+" ===>> Stop        : "+ (position*2) +" Contratos --- Price: "+(orderType.equals("Buy") ? lastPrice-Global.LOSE_VARIANCE : lastPrice+Global.LOSE_VARIANCE));
 			}
 			

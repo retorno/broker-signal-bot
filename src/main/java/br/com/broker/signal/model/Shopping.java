@@ -10,7 +10,7 @@ public class Shopping {
 
 	public Shopping(){}
 	
-	public Shopping(Long position, Long buyPrice, Long sellPrice, Long doublePositionPrice){
+	public Shopping(Integer position, Long buyPrice, Long sellPrice, Long doublePositionPrice){
 		this.position = position;
 		this.buyPrice = buyPrice;
 		this.sellPrice = sellPrice;
@@ -21,7 +21,7 @@ public class Shopping {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	private Long position;
+	private Integer position;
 	
 	private Long buyPrice;
 	
@@ -37,11 +37,11 @@ public class Shopping {
 		this.id = id;
 	}
 
-	public Long getPosition() {
+	public Integer getPosition() {
 		return position;
 	}
 
-	public void setPosition(Long position) {
+	public void setPosition(Integer position) {
 		this.position = position;
 	}
 

@@ -21,6 +21,13 @@ public class Result {
 		this.qtStopsAux = qtStopsAux;
 	}
 	
+	public Result(Long qtStops, Long qtWin, Long qtStopsAux, Long qtWinAux){
+		this.qtStops = qtStops;
+		this.qtWin = qtWin;
+		this.qtStopsAux = qtStopsAux;
+		this.qtWinAux = qtWinAux;
+	}
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
@@ -30,6 +37,8 @@ public class Result {
 	private Long qtWin;
 	
 	private Long qtStopsAux;
+	
+	private Long qtWinAux;
 	
 	public Long getId() {
 		return id;
@@ -61,6 +70,14 @@ public class Result {
 
 	public void setQtStopsAux(Long qtStopsAux) {
 		this.qtStopsAux = qtStopsAux;
+	}
+
+	public Long getQtWinAux() {
+		return qtWinAux;
+	}
+
+	public void setQtWinAux(Long qtWinAux) {
+		this.qtWinAux = qtWinAux;
 	}
 	
 }

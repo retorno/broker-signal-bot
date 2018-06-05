@@ -33,7 +33,7 @@ public class BrokerSignalScrapAPIClient {
 		new RestTemplate().getForObject(URL, String.class);
 	}
 	
-	public void changeStop(Long quantityPosition, String operation, int stopLoss, int doublePoints) {
+	public void changeStop(Integer quantityPosition, String operation, Long stopLoss, Long doublePoints, Long changePosition) {
 		if(Global.SIMULATION) return;
 		
 		String URL = Global.URL_SCRAP_API+"/change-stop";
@@ -44,8 +44,8 @@ public class BrokerSignalScrapAPIClient {
 		headers.set("operation", operation);
 		headers.set("stop_loss", ""+stopLoss);
 		headers.set("production","1");
-		headers.set("change_position", "1");
-		headers.set("calculate+stop", "1");
+		headers.set("change_position", ""+changePosition);
+		headers.set("calculate_stop", "1");
 		headers.set("point_to_double", ""+doublePoints);
 
 		MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
