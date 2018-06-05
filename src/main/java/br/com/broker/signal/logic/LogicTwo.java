@@ -86,7 +86,7 @@ public class LogicTwo {
 					
 					Thread.sleep(2000);
 					
-					if(result.getQtStopsAux() == 4) {
+					if(result.getQtWinAux() == 5) {
 						client.zerarAll();
 						result.setQtWinAux(0L);
 						resultRepository.save(result);
@@ -104,6 +104,7 @@ public class LogicTwo {
 			shoppingRepository.deleteAll();
 			result.setQtStops(result.getQtStops()+1);
 			result.setQtStopsAux(result.getQtStopsAux()+1);
+			result.setQtWinAux(0L);
 			resultRepository.save(result);
 		}else if(position == 0 && shoppingPosition == null) {
 			client.changeStop(Global.INICIAL_CONTRACTS, orderType, Global.LOSE_VARIANCE, Global.WIN_VARIANCE, 1L);
