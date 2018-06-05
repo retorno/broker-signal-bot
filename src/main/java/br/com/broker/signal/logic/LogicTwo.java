@@ -44,7 +44,7 @@ public class LogicTwo {
 			resultRepository.save(result);
 			shoppingRepository.deleteAll();
 			shoppingPosition = null;
-			Thread.sleep(60000);
+			Thread.sleep(30000);
 		}
 		
 		Long lastPrice = Long.parseLong(client.getLastPrice());
@@ -96,22 +96,28 @@ public class LogicTwo {
 			}
 			
 		}else if(position != 0 && shoppingPosition == null) {
+	
 			shoppingRepository.deleteAll();
 			shoppingRepository.save(new Shopping(position, lastPrice, Global.LOSE_VARIANCE, Global.WIN_VARIANCE));
 			shoppingPosition = shoppingRepository.findAll().get(0);
+
 		}else if(position == 0 && shoppingPosition != null) {
+		
 			System.out.println(new Date()+" ===>> Lose ");
 			shoppingRepository.deleteAll();
 			result.setQtStops(result.getQtStops()+1);
 			result.setQtStopsAux(result.getQtStopsAux()+1);
 			result.setQtWinAux(0L);
 			resultRepository.save(result);
+		
 		}else if(position == 0 && shoppingPosition == null) {
+		
 			client.changeStop(Global.INICIAL_CONTRACTS, orderType, Global.LOSE_VARIANCE, Global.WIN_VARIANCE, 1L);
 			Thread.sleep(2000);
 			shoppingRepository.deleteAll();
 			shoppingRepository.save(new Shopping(Global.INICIAL_CONTRACTS, lastPrice, Global.LOSE_VARIANCE, Global.WIN_VARIANCE));
 			shoppingPosition = shoppingRepository.findAll().get(0);
+		
 		}
 	}
 	
